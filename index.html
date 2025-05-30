@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ショッピングリスト</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .navigation {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navigation a {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .navigation a:hover {
+            background-color: #2980b9;
+        }
+        
+        .category-section {
+            background: white;
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .category-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .ingredient-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+        
+        .ingredient-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .ingredient-item input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .ingredient-name {
+            font-weight: 500;
+            margin-right: 10px;
+        }
+        
+        .ingredient-amount {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .recipe-table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        .recipe-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        
+        .recipe-table th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .recipe-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .recipe-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .recipe-table tr:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .ingredient-name-cell {
+            text-align: left !important;
+            font-weight: 500;
+            background-color: #ecf0f1;
+            min-width: 120px;
+        }
+        
+        .amount-cell {
+            font-size: 0.85em;
+            color: #555;
+        }
+        
+        .recipe-header {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            min-width: 80px;
+            height: 120px;
+        }
+        
+        @media (max-width: 768px) {
+            .ingredient-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation a {
+                display: block;
+                margin: 5px 0;
+            }
+            
+            .recipe-table {
+                font-size: 0.8em;
+            }
+            
+            .recipe-header {
+                min-width: 60px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🛒 ショッピングリスト</h1>
+    
+    <div class="navigation">
+        <a href="javascript:void(0)" onclick="scrollToSection('category-list')">分類別リスト</a>
+        <a href="javascript:void(0)" onclick="scrollToSection('recipe-table')">レシピ別材料表</a>
+    </div>
+
+    <section id="category-list">
+        <div class="category-section">
+            <div class="category-title">🥬 野菜</div>
+            <div class="ingredient-list">
+                <div class="ingredient-item">
+                    <input type="checkbox" id="enoki">
+                    <label for="enoki"><span class="ingredient-name">えのき</span><span class="ingredient-amount">1袋</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="onion">
+                    <label for="onion"><span class="ingredient-name">玉ねぎ</span><span class="ingredient-amount">2個</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="carrot">
+                    <label for="carrot"><span class="ingredient-name">人参</span><span class="ingredient-amount">1と1/2本</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="renkon">
+                    <label for="renkon"><span class="ingredient-name">れんこん</span><span class="ingredient-amount">150g（約1節）</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="broccoli">
+                    <label for="broccoli"><span class="ingredient-name">ブロッコリー</span><span class="ingredient-amount">1株</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="shimeji">
+                    <label for="shimeji"><span class="ingredient-name">しめじ</span><span class="ingredient-amount">1/2〜1袋</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="myoga">
+                    <label for="myoga"><span class="ingredient-name">みょうが</span><span class="ingredient-amount">2個</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="oba">
+                    <label for="oba"><span class="ingredient-name">大葉</span><span class="ingredient-amount">5枚</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="ginger">
+                    <label for="ginger"><span class="ingredient-name">しょうが</span><span class="ingredient-amount">1片</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="nasu">
+                    <label for="nasu"><span class="ingredient-name">なす</span><span class="ingredient-amount">1袋（3〜4本）</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="garlic">
+                    <label for="garlic"><span class="ingredient-name">にんにく</span><span class="ingredient-amount">2かけ</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <div class="category-title">🐟 魚介類</div>
+            <div class="ingredient-list">
+                <div class="ingredient-item">
+                    <input type="checkbox" id="katsuo">
+                    <label for="katsuo"><span class="ingredient-name">カツオ（刺身用柵）</span><span class="ingredient-amount">200g</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="mozuku">
+                    <label for="mozuku"><span class="ingredient-name">生もずく</span><span class="ingredient-amount">100g程度</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <div class="category-title">🍖 肉類</div>
+            <div class="ingredient-list">
+                <div class="ingredient-item">
+                    <input type="checkbox" id="chicken">
+                    <label for="chicken"><span class="ingredient-name">鶏もも肉</span><span class="ingredient-amount">2枚（皮付きのまま）</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="pork">
+                    <label for="pork"><span class="ingredient-name">豚ミンチ肉</span><span class="ingredient-amount">300g</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <div class="category-title">🥚 卵</div>
+            <div class="ingredient-list">
+                <div class="ingredient-item">
+                    <input type="checkbox" id="egg">
+                    <label for="egg"><span class="ingredient-name">卵</span><span class="ingredient-amount">3個</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <div class="category-title">📦 加工食品・乾物</div>
+            <div class="ingredient-list">
+                <div class="ingredient-item">
+                    <input type="checkbox" id="tomato_juice">
+                    <label for="tomato_juice"><span class="ingredient-name">トマトジュース（無塩）</span><span class="ingredient-amount">200ml（トマト缶1/2でも可）</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="curry_roux">
+                    <label for="curry_roux"><span class="ingredient-name">カレールー</span><span class="ingredient-amount">3〜4かけ（甘口辛口はお好みで）</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="sesame">
+                    <label for="sesame"><span class="ingredient-name">白ごま</span><span class="ingredient-amount">小さじ1</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="oregano">
+                    <label for="oregano"><span class="ingredient-name">乾燥オレガノ</span><span class="ingredient-amount">大さじ1</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="chicken_stock">
+                    <label for="chicken_stock"><span class="ingredient-name">鶏ガラ顆粒だし</span><span class="ingredient-amount">小さじ1〜2</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <div class="category-title">🧂 調味料・油</div>
+            <div class="ingredient-list">
+                <div class="ingredient-item">
+                    <input type="checkbox" id="salt">
+                    <label for="salt"><span class="ingredient-name">塩</span><span class="ingredient-amount">適量</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="olive_oil">
+                    <label for="olive_oil"><span class="ingredient-name">オリーブオイル</span><span class="ingredient-amount">大さじ5</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="black_pepper">
+                    <label for="black_pepper"><span class="ingredient-name">粗挽き黒こしょう</span><span class="ingredient-amount">少々</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="ponzu">
+                    <label for="ponzu"><span class="ingredient-name">ポン酢</span><span class="ingredient-amount">大さじ2</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="sesame_oil">
+                    <label for="sesame_oil"><span class="ingredient-name">ごま油</span><span class="ingredient-amount">小さじ1</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="soy_sauce">
+                    <label for="soy_sauce"><span class="ingredient-name">醤油</span><span class="ingredient-amount">小さじ1</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="mayo">
+                    <label for="mayo"><span class="ingredient-name">マヨネーズ</span><span class="ingredient-amount">大さじ3〜4</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="lemon">
+                    <label for="lemon"><span class="ingredient-name">レモン汁</span><span class="ingredient-amount">小さじ1</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="pepper">
+                    <label for="pepper"><span class="ingredient-name">こしょう</span><span class="ingredient-amount">少々</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="mentsuyu">
+                    <label for="mentsuyu"><span class="ingredient-name">めんつゆ</span><span class="ingredient-amount">110ml</span></label>
+                </div>
+                <div class="ingredient-item">
+                    <input type="checkbox" id="cooking_oil">
+                    <label for="cooking_oil"><span class="ingredient-name">お好みの油</span><span class="ingredient-amount">大さじ3</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <div class="category-title">🔧 その他</div>
+            <div class="ingredient-list">
+                <div class="ingredient-item">
+                    <input type="checkbox" id="water">
+                    <label for="water"><span class="ingredient-name">水</span><span class="ingredient-amount">900ml</span></label>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="recipe-table">
+        <div class="recipe-table-container">
+            <h2 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">📋 レシピ別材料表</h2>
+            <table class="recipe-table">
+                <thead>
+                    <tr>
+                        <th style="min-width: 150px;">材料名</th>
+                        <th class="recipe-header">基本の重ね煮</th>
+                        <th class="recipe-header">オーブンでオレガノチキン</th>
+                        <th class="recipe-header">重ね煮キーマカレー</th>
+                        <th class="recipe-header">カツオの薬味和え</th>
+                        <th class="recipe-header">ブロッコリーとゆで卵のサラダ</th>
+                        <th class="recipe-header">めんつゆで簡単！なすの煮浸し</th>
+                        <th class="recipe-header">もずくスープ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ingredient-name-cell">えのき</td>
+                        <td class="amount-cell">1袋</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">玉ねぎ</td>
+                        <td class="amount-cell">1〜2個</td>
+                        <td>-</td>
+                        <td class="amount-cell">1/2〜1個</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">人参</td>
+                        <td class="amount-cell">1本</td>
+                        <td>-</td>
+                        <td class="amount-cell">1/2個</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">塩</td>
+                        <td class="amount-cell">適量</td>
+                        <td class="amount-cell">小さじ1/2〜1</td>
+                        <td class="amount-cell">小さじ1</td>
+                        <td>-</td>
+                        <td class="amount-cell">少々</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">鶏もも肉</td>
+                        <td>-</td>
+                        <td class="amount-cell">2枚（皮付きのまま）</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">れんこん</td>
+                        <td>-</td>
+                        <td class="amount-cell">150g（約1節）</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">ブロッコリー</td>
+                        <td>-</td>
+                        <td class="amount-cell">1/2株</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">1株（約250〜300g）</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">オリーブオイル</td>
+                        <td>-</td>
+                        <td class="amount-cell">大さじ1.5〜2</td>
+                        <td class="amount-cell">大さじ1</td>
+                        <td>-</td>
+                        <td class="amount-cell">小さじ1</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">乾燥オレガノ</td>
+                        <td>-</td>
+                        <td class="amount-cell">大さじ1</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">にんにく</td>
+                        <td>-</td>
+                        <td class="amount-cell">1かけ</td>
+                        <td class="amount-cell">1かけ分</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">粗挽き黒こしょう</td>
+                        <td>-</td>
+                        <td class="amount-cell">少々</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">豚ミンチ肉</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">300g</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">しめじ</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">1/2〜1袋</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">トマトジュース（無塩）</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">200ml</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">カレールー</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">3〜4かけ</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">水</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">100ml</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">200ml</td>
+                        <td class="amount-cell">600ml</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">カツオ（刺身用柵）</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">200g</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">みょうが</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">2個</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">大葉</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">5枚</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">しょうが</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">少々</td>
+                        <td>-</td>
+                        <td class="amount-cell">1片</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">白ごま</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">小さじ1</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">ポン酢</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">大さじ2</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">ごま油</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">小さじ1</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">醤油</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">小さじ1</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">卵</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">3個</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">マヨネーズ</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">大さじ3〜4</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">レモン汁</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">小さじ1</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">こしょう</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">少々</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">なす</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">1本</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">2〜3本</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">めんつゆ</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">50ml</td>
+                        <td class="amount-cell">大さじ2〜4</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">お好みの油</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">大さじ3</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">生もずく</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">100g程度</td>
+                    </tr>
+                    <tr>
+                        <td class="ingredient-name-cell">鶏ガラ顆粒だし</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="amount-cell">小さじ1〜2</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script>
+        // セクションへのスクロール機能
+        function scrollToSection(sectionId) {
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // メモリ内でチェック状態を管理
+        const checkboxStates = {};
+        
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                checkboxStates[this.id] = this.checked;
+            });
+        });
+    </script>
+
+</body>
+</html>
